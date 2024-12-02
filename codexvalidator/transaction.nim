@@ -1,9 +1,9 @@
 import ./basics
-import ./transaction/slotid
+import ./transaction/storagerequest
 import ./transaction/period
 import ./transaction/groth16
 
-export slotid
+export storagerequest
 export period
 export groth16
 
@@ -14,9 +14,11 @@ type
     storageProof
     missingProof
   Transaction* = object
-    slotId: SlotId
+    requestId: StorageRequestId
+    slotIndex: uint32
     period: Period
-    inputs: seq[UInt256]
+    merkleRoot: UInt256
+    challenge: UInt256
     case kind: TransactionKind
     of storageProof:
       proof: Groth16Proof
@@ -25,43 +27,57 @@ type
 
 proc storageProof*(
   _: type Transaction,
-  slotId: SlotId,
+  requestId: StorageRequestId,
+  slotIndex: uint32,
   period: Period,
-  inputs: seq[UInt256],
+  merkleRoot: UInt256,
+  challenge: UInt256,
   proof: Groth16Proof
 ): Transaction =
   Transaction(
     kind: TransactionKind.storageProof,
-    slotId: slotId,
+    requestId: requestId,
     period: period,
-    inputs: inputs,
+    slotIndex: slotIndex,
+    merkleRoot: merkleRoot,
+    challenge: challenge,
     proof: proof
   )
 
 proc missingProof*(
   _: type Transaction,
-  slotId: SlotId,
+  requestId: StorageRequestId,
+  slotIndex: uint32,
   period: Period,
-  inputs: seq[UInt256],
+  merkleRoot: UInt256,
+  challenge: UInt256,
 ): Transaction =
   Transaction(
     kind: TransactionKind.missingProof,
-    slotId: slotId,
+    requestId: requestId,
+    slotIndex: slotIndex,
     period: period,
-    inputs: inputs
+    merkleRoot: merkleRoot,
+    challenge: challenge
   )
 
 func version*(transaction: Transaction): TransactionVersion =
   TransactionVersion.version0
 
-func slotId*(transaction: Transaction): SlotId =
-  transaction.slotId
+func requestId*(transaction: Transaction): StorageRequestId =
+  transaction.requestId
+
+func slotIndex*(transaction: Transaction): uint32 =
+  transaction.slotIndex
 
 func period*(transaction: Transaction): Period =
   transaction.period
 
-func inputs*(transaction: Transaction): seq[UInt256] =
-  transaction.inputs
+func merkleRoot*(transaction: Transaction): UInt256 =
+  transaction.merkleRoot
+
+func challenge*(transaction: Transaction): UInt256 =
+  transaction.challenge
 
 func proof*(transaction: Transaction): Groth16Proof =
   transaction.proof

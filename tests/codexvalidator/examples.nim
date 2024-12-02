@@ -16,8 +16,8 @@ proc example*[T](_: type seq[T], length = 0..10): seq[T] =
   let len = rand(length)
   newSeqWith(len, T.example)
 
-proc example*(_: type SlotId): SlotId =
-  SlotId(array[32, byte].example)
+proc example*(_: type StorageRequestId): StorageRequestId =
+  StorageRequestId(array[32, byte].example)
 
 proc example*(_: type Period): Period =
   Period(uint64.example)
@@ -43,12 +43,27 @@ proc example*(_: type Groth16Proof): Groth16Proof =
 
 proc example*(_: type Transaction): Transaction =
   let kind = [TransactionKind.storageProof, TransactionKind.missingProof].sample
-  let slotId = SlotId.example
+  let requestId = StorageRequestId.example
+  let slotIndex = uint32.example
   let period = Period.example
-  let inputs = seq[UInt256].example
+  let merkleRoot = UInt256.example
+  let challenge = UInt256.example
   case kind
   of TransactionKind.missingProof:
-    Transaction.missingProof(slotId, period, inputs)
+    Transaction.missingProof(
+      requestId,
+      slotIndex,
+      period,
+      merkleRoot,
+      challenge
+    )
   of TransactionKind.storageProof:
     let proof = Groth16Proof.example
-    Transaction.storageProof(slotId, period, inputs, proof)
+    Transaction.storageProof(
+      requestId,
+      slotIndex,
+      period,
+      merkleRoot,
+      challenge,
+      proof
+    )
