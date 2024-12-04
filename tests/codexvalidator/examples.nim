@@ -1,6 +1,7 @@
 import std/random
 import codexvalidator/basics
 import codexvalidator/transaction
+import codexvalidator/signatures
 
 proc example*[T: SomeInteger](_: type T): T =
   rand(T)
@@ -67,3 +68,6 @@ proc example*(_: type Transaction): Transaction =
       challenge,
       proof
     )
+
+proc example*(_: type Identity): Identity =
+  Identity.random(result)

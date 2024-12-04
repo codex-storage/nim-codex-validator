@@ -1,11 +1,10 @@
 import std/unittest
 import codexvalidator/basics
 import codexvalidator/transaction
-import codexvalidator/serialization
-import codexvalidator/serialization/protobuf
+import codexvalidator/transaction/serialization
 import ./examples
 
-suite "Serialization":
+suite "Transaction serialization":
 
   test "serializes a transaction with protobuf":
     let transaction = Transaction.example
