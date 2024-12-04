@@ -25,7 +25,7 @@ type
     of missingProof:
       discard
 
-proc storageProof*(
+func storageProof*(
   _: type Transaction,
   requestId: StorageRequestId,
   slotIndex: uint32,
@@ -44,7 +44,7 @@ proc storageProof*(
     proof: proof
   )
 
-proc missingProof*(
+func missingProof*(
   _: type Transaction,
   requestId: StorageRequestId,
   slotIndex: uint32,
@@ -63,6 +63,9 @@ proc missingProof*(
 
 func version*(transaction: Transaction): TransactionVersion =
   TransactionVersion.version0
+
+func kind*(transaction: Transaction): TransactionKind =
+  transaction.kind
 
 func requestId*(transaction: Transaction): StorageRequestId =
   transaction.requestId
