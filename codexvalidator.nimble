@@ -5,4 +5,6 @@ license = "MIT"
 
 requires "https://github.com/codex-storage/nim-mysticeti >= 0.1.0 & < 0.2.0"
 requires "https://github.com/codex-storage/nim-stint-versioned.git >= 1.0.0 & < 2.0.0"
-requires "https://github.com/mratsim/constantine#bc3845aa492b52f7fef047503b1592e830d1a774"
+requires "blscurve#de2d3c79264bba18dbea469c8c5c4b3bb3c8bc55"
+requires "nimcrypto >= 0.6.2 & < 0.7.0"
+requires "stew#a6e198132097fb544d04959aeb3b839e1408f942"

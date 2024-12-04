@@ -1,18 +1,18 @@
 import std/unittest
-import pkg/constantine/ethereum_bls_signatures
+import pkg/blscurve
 import codexvalidator/signatures
 import ./examples
 
 suite "Signature scheme":
 
   test "uses BLS private key as validator identity":
-    check signatures.Identity is ethereum_bls_signatures.SecretKey
+    check signatures.Identity is blscurve.SecretKey
 
   test "uses BLS public key as validator identifier":
-    check signatures.Identifier is ethereum_bls_signatures.PublicKey
+    check signatures.Identifier is blscurve.PublicKey
 
   test "uses BLS signatures":
-    check signatures.Signature is ethereum_bls_signatures.Signature
+    check signatures.Signature is blscurve.Signature
 
   test "can create a new random identity":
     var identity1, identity2: Identity
@@ -24,7 +24,7 @@ suite "Signature scheme":
     var identity: Identity
     Identity.random(identity)
     var publicKey: PublicKey
-    derive_pubkey(publicKey, identity)
+    check publicFromSecret(publicKey, identity)
     check identity.identifier == publicKey
 
   test "identity can sign messages":
@@ -40,5 +40,5 @@ suite "Signature scheme":
     Identity.random(identity2)
     let message = seq[byte].example
     let signature = identity1.sign(message)
-    check signature.verify(identity1.identifier, message)
-    check not signature.verify(identity2.identifier, message)
+    check identity1.identifier.verify(message, signature)
+    check not identity2.identifier.verify(message, signature)
