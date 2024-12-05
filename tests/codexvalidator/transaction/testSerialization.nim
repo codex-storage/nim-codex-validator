@@ -2,7 +2,7 @@ import std/unittest
 import codexvalidator/basics
 import codexvalidator/transaction
 import codexvalidator/transaction/serialization
-import ./examples
+import ../examples
 
 suite "Transaction serialization":
 
