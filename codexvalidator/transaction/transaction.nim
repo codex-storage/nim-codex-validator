@@ -17,8 +17,8 @@ type
     requestId: StorageRequestId
     slotIndex: uint32
     period: Period
-    merkleRoot: UInt256
-    challenge: UInt256
+    merkleRoot: array[32, byte]
+    challenge: array[32, byte]
     case kind: TransactionKind
     of storageProof:
       proof: Groth16Proof
@@ -30,8 +30,8 @@ func storageProof*(
   requestId: StorageRequestId,
   slotIndex: uint32,
   period: Period,
-  merkleRoot: UInt256,
-  challenge: UInt256,
+  merkleRoot: array[32, byte],
+  challenge: array[32, byte],
   proof: Groth16Proof
 ): Transaction =
   Transaction(
@@ -49,8 +49,8 @@ func missingProof*(
   requestId: StorageRequestId,
   slotIndex: uint32,
   period: Period,
-  merkleRoot: UInt256,
-  challenge: UInt256,
+  merkleRoot: array[32, byte],
+  challenge: array[32, byte],
 ): Transaction =
   Transaction(
     kind: TransactionKind.missingProof,
@@ -76,10 +76,10 @@ func slotIndex*(transaction: Transaction): uint32 =
 func period*(transaction: Transaction): Period =
   transaction.period
 
-func merkleRoot*(transaction: Transaction): UInt256 =
+func merkleRoot*(transaction: Transaction): array[32, byte] =
   transaction.merkleRoot
 
-func challenge*(transaction: Transaction): UInt256 =
+func challenge*(transaction: Transaction): array[32, byte] =
   transaction.challenge
 
 func proof*(transaction: Transaction): Groth16Proof =

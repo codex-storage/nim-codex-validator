@@ -36,8 +36,8 @@ func toBytes*(transaction: Transaction): seq[byte] =
     requestId: @(array[32, byte](transaction.requestId)),
     slotIndex: transaction.slotIndex,
     period: transaction.period.uint64,
-    merkleRoot: @(transaction.merkleRoot.toBytesBE()), # TODO: should this not be array[32, byte]?
-    challenge: @(transaction.challenge.toBytesBE()) # TODO ^^^
+    merkleRoot: @(transaction.merkleRoot),
+    challenge: @(transaction.challenge)
   )
   if transaction.kind == TransactionKind.storageProof:
     message.proof = Groth16ProofMessage(

@@ -17,8 +17,8 @@ suite "Transaction serialization":
     check protobuf.requestId == array[32, byte](transaction.requestId)
     check protobuf.slotIndex == transaction.slotIndex
     check protobuf.period == transaction.period.uint64
-    check protobuf.merkleRoot == transaction.merkleRoot.toBytesBE()
-    check protobuf.challenge == transaction.challenge.toBytesBE()
+    check protobuf.merkleRoot == array[32, byte](transaction.merkleRoot)
+    check protobuf.challenge == array[32, byte](transaction.challenge)
 
   test "serializes a storage proof with protobuf":
     let proof = Groth16Proof.example
@@ -26,8 +26,8 @@ suite "Transaction serialization":
       StorageRequestId.example,
       uint32.example,
       Period.example,
-      UInt256.example,
-      UInt256.example,
+      array[32, byte].example,
+      array[32, byte].example,
       proof
     )
     let serialized = transaction.toBytes()

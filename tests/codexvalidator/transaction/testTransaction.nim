@@ -9,8 +9,8 @@ suite "Transaction":
     let requestId = StorageRequestId.example
     let slotIndex = uint32.example
     let period = Period.example
-    let merkleRoot = UInt256.example
-    let challenge = UInt256.example
+    let merkleRoot = array[32, byte].example
+    let challenge = array[32, byte].example
     let proof = Groth16Proof.example
     let transaction = Transaction.storageProof(
       requestId, slotIndex, period, merkleRoot, challenge, proof
@@ -26,8 +26,8 @@ suite "Transaction":
     let requestId = StorageRequestId.example
     let slotIndex = uint32.example
     let period = Period.example
-    let merkleRoot = UInt256.example
-    let challenge = UInt256.example
+    let merkleRoot = array[32, byte].example
+    let challenge = array[32, byte].example
     let transaction = Transaction.missingProof(
       requestId, slotIndex, period, merkleRoot, challenge
     )

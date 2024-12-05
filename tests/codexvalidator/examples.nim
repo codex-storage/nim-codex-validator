@@ -47,8 +47,8 @@ proc example*(_: type Transaction): Transaction =
   let requestId = StorageRequestId.example
   let slotIndex = uint32.example
   let period = Period.example
-  let merkleRoot = UInt256.example
-  let challenge = UInt256.example
+  let merkleRoot = array[32, byte].example
+  let challenge = array[32, byte].example
   case kind
   of TransactionKind.missingProof:
     Transaction.missingProof(
