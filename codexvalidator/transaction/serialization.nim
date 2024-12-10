@@ -28,8 +28,7 @@ type
     real* {.fieldNumber: 1.}: seq[byte]
     imag* {.fieldNumber: 2.}: seq[byte]
 
-
-func toBytes*(transaction: Transaction): seq[byte] =
+func init*(_: type TransactionMessage, transaction: Transaction): TransactionMessage =
   var message = TransactionMessage(
     version: transaction.version.uint32,
     kind: transaction.kind.uint32,
@@ -60,4 +59,7 @@ func toBytes*(transaction: Transaction): seq[byte] =
         y: @(transaction.proof.c.y.toBytesBE())
       )
     )
-  ProtoBuf.encode(message)
+  message
+
+func toBytes*(transaction: Transaction): seq[byte] =
+  ProtoBuf.encode(TransactionMessage.init(transaction))

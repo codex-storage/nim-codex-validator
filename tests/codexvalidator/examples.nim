@@ -1,6 +1,8 @@
 import std/random
+import codexvalidator/hashing
 import codexvalidator/transaction
 import codexvalidator/signatures
+import codexvalidator/blocks
 import ./basics
 
 proc example*[T: SomeInteger](_: type T): T =
@@ -71,3 +73,20 @@ proc example*(_: type Transaction): Transaction =
 
 proc example*(_: type Identity): Identity =
   Identity.random(result)
+
+proc example*(_: type CommitteeMember): CommitteeMember =
+  CommitteeMember(uint32.example.int)
+
+proc example*(_: type Hash): Hash =
+  Hash.hash(seq[byte].example)
+
+proc example*(_: type BlockId): BlockId =
+  BlockId.init(CommitteeMember.example, uint64.example, Hash.example)
+
+proc example*(_: type Block): Block =
+  Block(
+    author: CommitteeMember.example,
+    round: uint64.example,
+    parents: seq[BlockId].example,
+    transactions: seq[Transaction].example
+  )
