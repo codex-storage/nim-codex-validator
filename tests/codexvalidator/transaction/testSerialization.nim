@@ -1,5 +1,4 @@
-import std/unittest
-import codexvalidator/basics
+import ../basics
 import codexvalidator/transaction
 import codexvalidator/transaction/serialization
 import ../examples

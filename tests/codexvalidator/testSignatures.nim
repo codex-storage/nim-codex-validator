@@ -1,4 +1,4 @@
-import std/unittest
+import ./basics
 import pkg/blscurve
 import codexvalidator/signatures
 import ./examples

@@ -1,7 +1,7 @@
 import std/random
-import codexvalidator/basics
 import codexvalidator/transaction
 import codexvalidator/signatures
+import ./basics
 
 proc example*[T: SomeInteger](_: type T): T =
   rand(T)
