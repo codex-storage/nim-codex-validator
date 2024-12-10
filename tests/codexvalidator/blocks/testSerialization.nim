@@ -3,7 +3,6 @@ import codexvalidator/blocks
 import codexvalidator/blocks/serialization
 import codexvalidator/transaction/serialization
 import codexvalidator/hashing
-import ../examples
 
 suite "Block serialization":
 

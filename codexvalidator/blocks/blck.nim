@@ -1,12 +1,15 @@
-import pkg/mysticeti
+from pkg/mysticeti import CommitteeMember, `==`
+import ../basics
 import ../transaction
+import ../hashing
 import ./blockid
 
 export mysticeti.CommitteeMember
+export mysticeti.`==`
 
 type Block* = ref object
   author*: CommitteeMember
   round*: uint64
-  parents*: seq[blockid.BlockId]
+  parents*: seq[BlockId]
   transactions*: seq[Transaction]
-  id*: blockid.BlockId
+  hash*: ?Hash

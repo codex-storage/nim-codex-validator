@@ -1,6 +1,5 @@
 import ../basics
 import codexvalidator/transaction
-import ../examples
 
 suite "Transaction":
 

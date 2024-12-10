@@ -1,11 +1,11 @@
 import std/unittest
-
-export unittest
-
 import std/sequtils
-
-export sequtils
-
 import pkg/stint
 
+export unittest
+export sequtils
 export stint
+
+import ./examples
+
+export examples

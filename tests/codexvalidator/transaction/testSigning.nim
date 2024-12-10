@@ -1,7 +1,6 @@
 import ../basics
 import codexvalidator/signatures
 import codexvalidator/transaction
-import ../examples
 
 suite "Transaction signing":
 

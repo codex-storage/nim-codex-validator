@@ -7,3 +7,7 @@ export blck
 import ./blocks/serialization
 
 export serialization.toBytes
+
+import ./blocks/blockhash
+
+export blockhash.id

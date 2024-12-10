@@ -1,7 +1,6 @@
 import ../basics
 import codexvalidator/transaction
 import codexvalidator/transaction/serialization
-import ../examples
 
 suite "Transaction serialization":
 

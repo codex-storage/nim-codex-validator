@@ -1,7 +1,6 @@
 import ./basics
 import pkg/blscurve
 import codexvalidator/signatures
-import ./examples
 
 suite "Signature scheme":
 
