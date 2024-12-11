@@ -1,5 +1,6 @@
 import pkg/blscurve
 import pkg/nimcrypto
+import ./hashing
 
 export blscurve.Signature
 export blscurve.sign
@@ -19,3 +20,9 @@ proc random*(_: type Identity, identity: var Identity) =
 
 func identifier*(identity: Identity): Identifier =
   doAssert publicFromSecret(result, identity)
+
+func sign*(identity: Identity, hash: Hash): Signature =
+  identity.sign(hash.data)
+
+func verify*(signature: Signature, identifier: Identifier, hash: Hash): bool =
+  identifier.verify(hash.toBytes(), signature)

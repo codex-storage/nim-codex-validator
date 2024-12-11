@@ -1,5 +1,6 @@
 import ./basics
 import pkg/blscurve
+import codexvalidator/hashing
 import codexvalidator/signatures
 
 suite "Signature scheme":
@@ -41,3 +42,10 @@ suite "Signature scheme":
     let signature = identity1.sign(message)
     check identity1.identifier.verify(message, signature)
     check not identity2.identifier.verify(message, signature)
+
+  test "identity can sign and verify hashes":
+    var identity: Identity
+    Identity.random(identity)
+    let hash = Hash.example
+    let signature = identity.sign(hash)
+    check signature.verify(identity.identifier, hash)
