@@ -1,4 +1,5 @@
 import ../basics
+import ../hashing
 import ./storagerequest
 import ./period
 import ./groth16
@@ -13,7 +14,7 @@ type
   TransactionKind* {.pure.} = enum
     storageProof
     missingProof
-  Transaction* = object
+  Transaction* = ref object
     requestId: StorageRequestId
     slotIndex: uint32
     period: Period
@@ -24,6 +25,7 @@ type
       proof: Groth16Proof
     of missingProof:
       discard
+    hash: ?Hash
 
 func storageProof*(
   _: type Transaction,
@@ -84,6 +86,12 @@ func challenge*(transaction: Transaction): array[32, byte] =
 
 func proof*(transaction: Transaction): Groth16Proof =
   transaction.proof
+
+func `hash=`*(transaction: Transaction, hash: Hash) =
+  transaction.hash = some hash
+
+func hash*(transaction: Transaction): ?Hash =
+  transaction.hash
 
 func `==`*(a, b: Transaction): bool =
   if a.kind != b.kind:

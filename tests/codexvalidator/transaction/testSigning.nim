@@ -1,6 +1,7 @@
 import ../basics
 import codexvalidator/signatures
 import codexvalidator/transaction
+import codexvalidator/hashing
 
 suite "Transaction signing":
 
@@ -10,7 +11,7 @@ suite "Transaction signing":
     let signed = identity.sign(transaction)
     check signed.transaction == transaction
     check signed.signer == identity.identifier
-    check signed.signature == identity.sign(transaction.toBytes())
+    check signed.signature == identity.sign(transaction.hash.toBytes())
 
   test "transaction signature can be verified":
     let identity = Identity.example

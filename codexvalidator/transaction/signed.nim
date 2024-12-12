@@ -1,6 +1,6 @@
 import ../signatures
 import ./transaction
-import ./serialization
+import ./hashing
 
 type SignedTransaction* = object
   transaction: Transaction
@@ -20,7 +20,8 @@ func init*(
   )
 
 func sign*(identity: Identity, transaction: Transaction): SignedTransaction =
-  let signature = identity.sign(transaction.toBytes())
+  let hash = hashing.hash(transaction)
+  let signature = identity.sign(hash.toBytes())
   SignedTransaction.init(transaction, identity.identifier, signature)
 
 func transaction*(signed: SignedTransaction): Transaction =
@@ -33,4 +34,5 @@ func signature*(signed: SignedTransaction): Signature =
   signed.signature
 
 func verifySignature*(signed: SignedTransaction): bool =
-  signed.signer.verify(signed.transaction.toBytes(), signed.signature)
+  let hash = hashing.hash(signed.transaction)
+  signed.signer.verify(hash.toBytes(), signed.signature)
