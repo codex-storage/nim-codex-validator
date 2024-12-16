@@ -10,9 +10,7 @@ suite "Block serialization":
   test "serializes a block id with protobuf":
     let id = BlockId.example
     let serialized = id.toBytes()
-    {.warning[Deprecated]: off.} # ignore warning in protobuf_serialization
     let protobuf = ProtoBuf.decode(serialized, BlockIdMessage)
-    {.warning[Deprecated]: on.}
     check protobuf.author == id.author.uint32
     check protobuf.round == id.round
     check protobuf.hash == id.hash.toBytes()
