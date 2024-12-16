@@ -30,9 +30,7 @@ suite "Transaction serialization":
       proof
     )
     let serialized = transaction.toBytes()
-    {.warning[Deprecated]: off.} # ignore warning in protobuf_serialization
     let protobuf = ProtoBuf.decode(serialized, TransactionMessage)
-    {.warning[Deprecated]: on.}
     check protobuf.proof.a.x == transaction.proof.a.x.toBytesBE()
     check protobuf.proof.a.y == transaction.proof.a.y.toBytesBE()
     check protobuf.proof.b.x.real == transaction.proof.b.x.real.toBytesBE()
