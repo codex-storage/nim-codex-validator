@@ -1,5 +1,6 @@
 import pkg/protobuf_serialization
 import ../basics
+import ../signatures
 import ./transaction
 
 export protobuf_serialization
@@ -63,3 +64,21 @@ func init*(_: type TransactionMessage, transaction: Transaction): TransactionMes
 
 func toBytes*(transaction: Transaction): seq[byte] =
   ProtoBuf.encode(TransactionMessage.init(transaction))
+
+type SignedTransactionMessage* {.proto3.} = object
+  transaction* {.fieldNumber: 1.}: TransactionMessage
+  signer* {.fieldNumber: 2.}: seq[byte]
+  signature* {.fieldNumber: 3.}: seq[byte]
+
+func init*(
+  _: type SignedTransactionMessage,
+  signed: Signed[Transaction]
+): SignedTransactionMessage =
+  SignedTransactionMessage(
+    transaction: TransactionMessage.init(signed.value),
+    signer: signed.signer.toBytes(),
+    signature: signed.signature.toBytes()
+  )
+
+func toBytes*(signed: Signed[Transaction]): seq[byte] =
+  Protobuf.encode(SignedTransactionMessage.init(signed))

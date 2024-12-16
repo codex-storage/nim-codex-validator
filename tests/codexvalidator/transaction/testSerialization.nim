@@ -1,6 +1,7 @@
 import ../basics
 import codexvalidator/transaction
 import codexvalidator/transaction/serialization
+import codexvalidator/signatures
 
 suite "Transaction serialization":
 
@@ -40,3 +41,13 @@ suite "Transaction serialization":
     check protobuf.proof.b.y.imag == transaction.proof.b.y.imag.toBytesBE()
     check protobuf.proof.c.x == transaction.proof.c.x.toBytesBE()
     check protobuf.proof.c.y == transaction.proof.c.y.toBytesBE()
+
+  test "serializes a signed transaction with protobuf":
+    let transaction = Transaction.example
+    let identity = Identity.example
+    let signed = Signed.sign(identity, transaction)
+    let serialized = signed.toBytes()
+    let protobuf = Protobuf.decode(serialized, SignedTransactionMessage)
+    check protobuf.transaction == TransactionMessage.init(transaction)
+    check protobuf.signer == signed.signer.toBytes()
+    check protobuf.signature == signed.signature.toBytes()
