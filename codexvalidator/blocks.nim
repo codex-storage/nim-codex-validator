@@ -2,12 +2,13 @@ import ./blocks/blockid
 import ./blocks/blck
 
 export blockid
-export blck
+export blck except hash
 
 import ./blocks/serialization
 
 export serialization.toBytes
 
-import ./blocks/blockhash
+import ./blocks/hashing
 
-export blockhash.id
+export hashing.hash
+export hashing.id

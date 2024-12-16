@@ -3,6 +3,7 @@ import codexvalidator/blocks
 import codexvalidator/blocks/serialization
 import codexvalidator/transaction/serialization
 import codexvalidator/hashing
+import codexvalidator/signatures
 
 suite "Block serialization":
 
@@ -26,3 +27,13 @@ suite "Block serialization":
     check protobuf.round == blck.round
     check protobuf.parents == blck.parents.mapIt(BlockIdMessage.init(it))
     check protobuf.transactions == blck.transactions.mapIt(TransactionMessage.init(it))
+
+  test "serializes a signed block with protobuf":
+    let blck = Block.example
+    let identity = Identity.example
+    let signed = Signed.sign(identity, blck)
+    let serialized = signed.toBytes()
+    let protobuf = Protobuf.decode(serialized, SignedBlockMessage)
+    check protobuf.blck == BlockMessage.init(blck)
+    check protobuf.signer == signed.signer.toBytes()
+    check protobuf.signature == signed.signature.toBytes()

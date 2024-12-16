@@ -3,6 +3,7 @@ import ../basics
 import ../hashing
 import ../transaction
 import ../transaction/serialization
+import ../signatures
 import ./blockid
 import ./blck
 
@@ -39,3 +40,21 @@ func init*(_: type BlockMessage, blck: Block): BlockMessage =
 
 func toBytes*(blck: Block): seq[byte] =
   Protobuf.encode(BlockMessage.init(blck))
+
+type SignedBlockMessage* {.proto3.} = object
+  blck* {.fieldNumber: 1.}: BlockMessage
+  signer* {.fieldNumber: 2.}: seq[byte]
+  signature* {.fieldNumber: 3.}: seq[byte]
+
+func init*(
+  _: type SignedBlockMessage,
+  signed: Signed[Block]
+): SignedBlockMessage =
+  SignedBlockMessage(
+    blck: BlockMessage.init(signed.value),
+    signer: signed.signer.toBytes(),
+    signature: signed.signature.toBytes()
+  )
+
+func toBytes*(signed: Signed[Block]): seq[byte] =
+  Protobuf.encode(SignedBlockMessage.init(signed))

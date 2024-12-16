@@ -12,4 +12,10 @@ type Block* = ref object
   round*: uint64
   parents*: seq[BlockId]
   transactions*: seq[Transaction]
-  hash*: ?Hash
+  hash: ?Hash
+
+func `hash=`*(blck: Block, hash: Hash) =
+  blck.hash = some hash
+
+func hash*(blck: Block): ?Hash =
+  blck.hash
