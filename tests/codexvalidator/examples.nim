@@ -74,6 +74,12 @@ proc example*(_: type Transaction): Transaction =
 proc example*(_: type Identity): Identity =
   Identity.random(result)
 
+proc example*(_: type Identifier): Identifier =
+  Identity.example.identifier
+
+proc example*(_: type Signature): Signature =
+  Identity.example.sign(seq[byte].example)
+
 proc example*(_: type CommitteeMember): CommitteeMember =
   CommitteeMember(uint32.example.int)
 
