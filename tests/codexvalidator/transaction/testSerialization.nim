@@ -41,11 +41,84 @@ suite "Transaction serialization":
     check protobuf.proof.c.y == transaction.proof.c.y.toBytesBE()
 
   test "serializes a signed transaction with protobuf":
-    let transaction = Transaction.example
-    let identity = Identity.example
-    let signed = Signed.sign(identity, transaction)
+    let signed = Signed[Transaction].example
     let serialized = signed.toBytes()
     let protobuf = Protobuf.decode(serialized, SignedTransactionMessage)
-    check protobuf.transaction == TransactionMessage.init(transaction)
+    check protobuf.transaction == TransactionMessage.init(signed.value)
     check protobuf.signer == signed.signer.toBytes()
     check protobuf.signature == signed.signature.toBytes()
+
+  test "deserializes a signed transaction":
+    let signed = Signed[Transaction].example
+    let serialized = signed.toBytes()
+    let deserialized = Signed[Transaction].fromBytes(serialized)
+    check deserialized == success signed
+
+  test "deserialization fails when protobuf encoding is invalid":
+    let invalid = seq[byte].example
+    let deserialized = Signed[Transaction].fromBytes(invalid)
+    check deserialized.isFailure
+    check deserialized.errorOption.?msg == some "Invalid wire type"
+
+  test "deserialization fails when signer is invalid":
+    let signed = Signed[Transaction].example
+    var message = SignedTransactionMessage.init(signed)
+    message.signer &= 42'u8
+    let invalid = Protobuf.encode(message)
+    let deserialized = Signed[Transaction].fromBytes(invalid)
+    check deserialized.isFailure
+    check deserialized.errorOption.?msg == some "invalid identifier"
+
+  test "deserialization fails when signature is invalid":
+    let signed = Signed[Transaction].example
+    var message = SignedTransactionMessage.init(signed)
+    message.signature &= 42'u8
+    let invalid = Protobuf.encode(message)
+    let deserialized = Signed[Transaction].fromBytes(invalid)
+    check deserialized.isFailure
+    check deserialized.errorOption.?msg == some "invalid signature"
+
+  test "deserialization fails when transaction version is unsupported":
+    let signed = Signed[Transaction].example
+    var message = SignedTransactionMessage.init(signed)
+    message.transaction.version = 42
+    let invalid = Protobuf.encode(message)
+    let deserialized = Signed[Transaction].fromBytes(invalid)
+    check deserialized.isFailure
+    check deserialized.errorOption.?msg == some "unsupported transaction version: 42"
+
+  test "deserialization fails when transaction kind is invalid":
+    let signed = Signed[Transaction].example
+    var message = SignedTransactionMessage.init(signed)
+    message.transaction.kind = 42
+    let invalid = Protobuf.encode(message)
+    let deserialized = Signed[Transaction].fromBytes(invalid)
+    check deserialized.isFailure
+    check deserialized.errorOption.?msg == some "invalid transaction kind: 42"
+
+  test "deserialization fails when storage request id is invalid":
+    let signed = Signed[Transaction].example
+    var message = SignedTransactionMessage.init(signed)
+    message.transaction.requestid &= 42'u8
+    let invalid = Protobuf.encode(message)
+    let deserialized = Signed[Transaction].fromBytes(invalid)
+    check deserialized.isFailure
+    check deserialized.errorOption.?msg == some "expected 32 bytes but got: 33"
+
+  test "deserialization fails when merkle root is invalid":
+    let signed = Signed[Transaction].example
+    var message = SignedTransactionMessage.init(signed)
+    message.transaction.merkleRoot &= 42'u8
+    let invalid = Protobuf.encode(message)
+    let deserialized = Signed[Transaction].fromBytes(invalid)
+    check deserialized.isFailure
+    check deserialized.errorOption.?msg == some "expected 32 bytes but got: 33"
+
+  test "deserialization fails when challenge is invalid":
+    let signed = Signed[Transaction].example
+    var message = SignedTransactionMessage.init(signed)
+    message.transaction.challenge &= 42'u8
+    let invalid = Protobuf.encode(message)
+    let deserialized = Signed[Transaction].fromBytes(invalid)
+    check deserialized.isFailure
+    check deserialized.errorOption.?msg == some "expected 32 bytes but got: 33"

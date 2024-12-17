@@ -80,6 +80,9 @@ proc example*(_: type Identifier): Identifier =
 proc example*(_: type Signature): Signature =
   Identity.example.sign(seq[byte].example)
 
+proc example*[T](_: type Signed[T]): Signed[T] =
+  Signed.sign(Identity.example, T.example)
+
 proc example*(_: type CommitteeMember): CommitteeMember =
   CommitteeMember(uint32.example.int)
 
