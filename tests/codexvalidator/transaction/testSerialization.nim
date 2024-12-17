@@ -13,32 +13,32 @@ suite "Transaction serialization":
     {.warning[Deprecated]: on.}
     check protobuf.version == transaction.version.uint32
     check protobuf.kind == transaction.kind.uint32
-    check protobuf.requestId == array[32, byte](transaction.requestId)
-    check protobuf.slotIndex == transaction.slotIndex
-    check protobuf.period == transaction.period.uint64
-    check protobuf.merkleRoot == array[32, byte](transaction.merkleRoot)
-    check protobuf.challenge == array[32, byte](transaction.challenge)
 
-  test "serializes a storage proof with protobuf":
-    let proof = Groth16Proof.example
-    let transaction = Transaction.storageProof(
-      StorageRequestId.example,
-      uint32.example,
-      Period.example,
-      array[32, byte].example,
-      array[32, byte].example,
-      proof
-    )
+  test "serializes storage proof input with protobuf":
+    let transaction = Transaction.example
+    let proofInput = transaction.proofInput
     let serialized = transaction.toBytes()
     let protobuf = ProtoBuf.decode(serialized, TransactionMessage)
-    check protobuf.proof.a.x == transaction.proof.a.x.toBytesBE()
-    check protobuf.proof.a.y == transaction.proof.a.y.toBytesBE()
-    check protobuf.proof.b.x.real == transaction.proof.b.x.real.toBytesBE()
-    check protobuf.proof.b.x.imag == transaction.proof.b.x.imag.toBytesBE()
-    check protobuf.proof.b.y.real == transaction.proof.b.y.real.toBytesBE()
-    check protobuf.proof.b.y.imag == transaction.proof.b.y.imag.toBytesBE()
-    check protobuf.proof.c.x == transaction.proof.c.x.toBytesBE()
-    check protobuf.proof.c.y == transaction.proof.c.y.toBytesBE()
+    check protobuf.proofInput.requestId == array[32, byte](proofInput.requestId)
+    check protobuf.proofInput.slotIndex == proofInput.slotIndex
+    check protobuf.proofInput.period == proofInput.period.uint64
+    check protobuf.proofInput.merkleRoot == array[32, byte](proofInput.merkleRoot)
+    check protobuf.proofInput.challenge == array[32, byte](proofInput.challenge)
+
+  test "serializes a storage proof with protobuf":
+    let proofInput = StorageProofInput.example
+    let proof = Groth16Proof.example
+    let transaction = Transaction.storageProof(proofInput, proof)
+    let serialized = transaction.toBytes()
+    let protobuf = ProtoBuf.decode(serialized, TransactionMessage)
+    check protobuf.proof.a.x == proof.a.x.toBytesBE()
+    check protobuf.proof.a.y == proof.a.y.toBytesBE()
+    check protobuf.proof.b.x.real == proof.b.x.real.toBytesBE()
+    check protobuf.proof.b.x.imag == proof.b.x.imag.toBytesBE()
+    check protobuf.proof.b.y.real == proof.b.y.real.toBytesBE()
+    check protobuf.proof.b.y.imag == proof.b.y.imag.toBytesBE()
+    check protobuf.proof.c.x == proof.c.x.toBytesBE()
+    check protobuf.proof.c.y == proof.c.y.toBytesBE()
 
   test "serializes a signed transaction with protobuf":
     let signed = Signed[Transaction].example
@@ -99,7 +99,7 @@ suite "Transaction serialization":
   test "deserialization fails when storage request id is invalid":
     let signed = Signed[Transaction].example
     var message = SignedTransactionMessage.init(signed)
-    message.transaction.requestid &= 42'u8
+    message.transaction.proofInput.requestid &= 42'u8
     let invalid = Protobuf.encode(message)
     let deserialized = Signed[Transaction].fromBytes(invalid)
     check deserialized.isFailure
@@ -108,7 +108,7 @@ suite "Transaction serialization":
   test "deserialization fails when merkle root is invalid":
     let signed = Signed[Transaction].example
     var message = SignedTransactionMessage.init(signed)
-    message.transaction.merkleRoot &= 42'u8
+    message.transaction.proofInput.merkleRoot &= 42'u8
     let invalid = Protobuf.encode(message)
     let deserialized = Signed[Transaction].fromBytes(invalid)
     check deserialized.isFailure
@@ -117,7 +117,7 @@ suite "Transaction serialization":
   test "deserialization fails when challenge is invalid":
     let signed = Signed[Transaction].example
     var message = SignedTransactionMessage.init(signed)
-    message.transaction.challenge &= 42'u8
+    message.transaction.proofInput.challenge &= 42'u8
     let invalid = Protobuf.encode(message)
     let deserialized = Signed[Transaction].fromBytes(invalid)
     check deserialized.isFailure

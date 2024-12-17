@@ -2,10 +2,12 @@ import ../basics
 import ../hashing
 import ./storagerequest
 import ./period
+import ./proofinput
 import ./groth16
 
 export storagerequest
 export period
+export proofinput
 export groth16
 
 type
@@ -15,11 +17,7 @@ type
     storageProof
     missingProof
   Transaction* = ref object
-    requestId: StorageRequestId
-    slotIndex: uint32
-    period: Period
-    merkleRoot: array[32, byte]
-    challenge: array[32, byte]
+    proofInput: StorageProofInput
     case kind: TransactionKind
     of storageProof:
       proof: Groth16Proof
@@ -29,38 +27,22 @@ type
 
 func storageProof*(
   _: type Transaction,
-  requestId: StorageRequestId,
-  slotIndex: uint32,
-  period: Period,
-  merkleRoot: array[32, byte],
-  challenge: array[32, byte],
+  proofInput: StorageProofInput,
   proof: Groth16Proof
 ): Transaction =
   Transaction(
     kind: TransactionKind.storageProof,
-    requestId: requestId,
-    period: period,
-    slotIndex: slotIndex,
-    merkleRoot: merkleRoot,
-    challenge: challenge,
+    proofInput: proofInput,
     proof: proof
   )
 
 func missingProof*(
   _: type Transaction,
-  requestId: StorageRequestId,
-  slotIndex: uint32,
-  period: Period,
-  merkleRoot: array[32, byte],
-  challenge: array[32, byte],
+  proofInput: StorageProofInput
 ): Transaction =
   Transaction(
     kind: TransactionKind.missingProof,
-    requestId: requestId,
-    slotIndex: slotIndex,
-    period: period,
-    merkleRoot: merkleRoot,
-    challenge: challenge
+    proofInput: proofInput
   )
 
 func version*(transaction: Transaction): TransactionVersion =
@@ -69,20 +51,8 @@ func version*(transaction: Transaction): TransactionVersion =
 func kind*(transaction: Transaction): TransactionKind =
   transaction.kind
 
-func requestId*(transaction: Transaction): StorageRequestId =
-  transaction.requestId
-
-func slotIndex*(transaction: Transaction): uint32 =
-  transaction.slotIndex
-
-func period*(transaction: Transaction): Period =
-  transaction.period
-
-func merkleRoot*(transaction: Transaction): array[32, byte] =
-  transaction.merkleRoot
-
-func challenge*(transaction: Transaction): array[32, byte] =
-  transaction.challenge
+func proofInput*(transaction: Transaction): StorageProofInput =
+  transaction.proofInput
 
 func proof*(transaction: Transaction): Groth16Proof =
   transaction.proof
@@ -96,15 +66,7 @@ func hash*(transaction: Transaction): ?Hash =
 func `==`*(a, b: Transaction): bool =
   if a.kind != b.kind:
     return false
-  if a.requestId != b.requestId:
-    return false
-  if a.slotIndex != b.slotIndex:
-    return false
-  if a.period != b.period:
-    return false
-  if a.merkleRoot != b.merkleRoot:
-    return false
-  if a.challenge != b.challenge:
+  if a.proofInput != b.proofInput:
     return false
   case a.kind
   of TransactionKind.storageProof:

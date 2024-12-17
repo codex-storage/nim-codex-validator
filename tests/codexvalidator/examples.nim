@@ -44,32 +44,29 @@ proc example*(_: type Groth16Proof): Groth16Proof =
     G1Point.example
   )
 
-proc example*(_: type Transaction): Transaction =
-  let kind = [TransactionKind.storageProof, TransactionKind.missingProof].sample
+proc example*(_: type StorageProofInput): StorageProofInput =
   let requestId = StorageRequestId.example
   let slotIndex = uint32.example
   let period = Period.example
   let merkleRoot = array[32, byte].example
   let challenge = array[32, byte].example
+  StorageProofInput.init(
+    requestId,
+    slotIndex,
+    period,
+    merkleRoot,
+    challenge
+  )
+
+proc example*(_: type Transaction): Transaction =
+  let kind = [TransactionKind.storageProof, TransactionKind.missingProof].sample
+  let proofInput = StorageProofInput.example
   case kind
   of TransactionKind.missingProof:
-    Transaction.missingProof(
-      requestId,
-      slotIndex,
-      period,
-      merkleRoot,
-      challenge
-    )
+    Transaction.missingProof(proofInput)
   of TransactionKind.storageProof:
     let proof = Groth16Proof.example
-    Transaction.storageProof(
-      requestId,
-      slotIndex,
-      period,
-      merkleRoot,
-      challenge,
-      proof
-    )
+    Transaction.storageProof(proofInput, proof)
 
 proc example*(_: type Identity): Identity =
   Identity.random(result)

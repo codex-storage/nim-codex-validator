@@ -21,6 +21,18 @@ func fromBytes(
 ): ?!StorageRequestId =
   success StorageRequestId(? array[32, byte].fromBytes(bytes))
 
+func init*(
+  _: type StorageProofInput,
+  message: StorageProofInputMessage
+): ?!StorageProofInput =
+  success StorageProofInput.init(
+    ? StorageRequestId.fromBytes(message.requestId),
+    message.slotIndex,
+    Period(message.period),
+    ? array[32, byte].fromBytes(message.merkleRoot),
+    ? array[32, byte].fromBytes(message.challenge)
+  )
+
 func init(_: type Groth16Proof, message: Groth16ProofMessage): Groth16Proof =
   Groth16Proof.init(
     G1Point.init(
@@ -46,29 +58,13 @@ func init(_: type Groth16Proof, message: Groth16ProofMessage): Groth16Proof =
 func init(_: type Transaction, message: TransactionMessage): ?!Transaction =
   if message.version != TransactionVersion.version0.uint32:
     return failure "unsupported transaction version: " & $message.version
-  let requestId = ? StorageRequestId.fromBytes(message.requestId)
-  let slotIndex = message.slotIndex
-  let period = Period(message.period)
-  let merkleRoot = ? array[32, byte].fromBytes(message.merkleRoot)
-  let challenge = ? array[32, byte].fromBytes(message.challenge)
+  let proofInput = ? StorageProofInput.init(message.proofInput)
   case message.kind
   of TransactionKind.storageProof.uint32:
-    success Transaction.storageProof(
-      requestId,
-      slotIndex,
-      period,
-      merkleRoot,
-      challenge,
-      Groth16Proof.init(message.proof)
-    )
+    let proof = Groth16Proof.init(message.proof)
+    success Transaction.storageProof(proofInput, proof)
   of TransactionKind.missingProof.uint32:
-    success Transaction.missingProof(
-      requestId,
-      message.slotIndex,
-      period,
-      merkleRoot,
-      challenge,
-    )
+    success Transaction.missingProof(proofInput)
   else:
     failure "invalid transaction kind: " & $message.kind
 
