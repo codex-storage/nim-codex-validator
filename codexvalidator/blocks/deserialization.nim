@@ -25,7 +25,7 @@ func init*(
     author: CommitteeMember(message.author),
     round: message.round,
     parents: message.parents.mapIt(? BlockId.init(it)),
-    transactions: message.transactions.mapIt(? Transaction.init(it))
+    transactions: message.transactions.mapIt(? Signed[Transaction].init(it))
   )
 
 func init*(

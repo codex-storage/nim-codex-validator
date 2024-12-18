@@ -94,5 +94,5 @@ proc example*(_: type Block): Block =
     author: CommitteeMember.example,
     round: uint64.example,
     parents: seq[BlockId].example,
-    transactions: seq[Transaction].example
+    transactions: seq[Signed[Transaction]].example
   )

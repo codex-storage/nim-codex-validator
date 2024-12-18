@@ -2,6 +2,7 @@ from pkg/mysticeti import CommitteeMember, `==`, `$`
 import ../basics
 import ../transaction
 import ../hashing
+import ../signatures
 import ./blockid
 
 export mysticeti.CommitteeMember
@@ -12,7 +13,7 @@ type Block* = ref object
   author*: CommitteeMember
   round*: uint64
   parents*: seq[BlockId]
-  transactions*: seq[Transaction]
+  transactions*: seq[Signed[Transaction]]
   hash: ?Hash
 
 func `hash=`*(blck: Block, hash: Hash) =

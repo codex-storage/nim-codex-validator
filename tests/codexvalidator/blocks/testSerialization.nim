@@ -25,7 +25,7 @@ suite "Block serialization":
     check protobuf.author == blck.author.uint32
     check protobuf.round == blck.round
     check protobuf.parents == blck.parents.mapIt(BlockIdMessage.init(it))
-    check protobuf.transactions == blck.transactions.mapIt(TransactionMessage.init(it))
+    check protobuf.transactions == blck.transactions.mapIt(SignedTransactionMessage.init(it))
 
   test "serializes a signed block with protobuf":
     let blck = Block.example
@@ -79,8 +79,8 @@ suite "Block serialization":
   test "deserialization fails when transaction is invalid":
     let signed = Signed[Block].example
     var message = SignedBlockMessage.init(signed)
-    var transaction = TransactionMessage.init(Transaction.example)
-    transaction.version = 42'u8
+    var transaction = SignedTransactionMessage.init(Signed[Transaction].example)
+    transaction.transaction.version = 42'u8
     message.blck.transactions &= transaction
     let invalid = Protobuf.encode(message)
     let deserialized = Signed[Block].fromBytes(invalid)

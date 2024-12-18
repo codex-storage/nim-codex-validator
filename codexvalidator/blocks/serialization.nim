@@ -28,14 +28,14 @@ type BlockMessage* {.proto3.} = object
   author* {.fieldNumber: 1, pint.}: uint32
   round* {.fieldNumber: 2, pint.}: uint64
   parents* {.fieldNumber: 3.}: seq[BlockIdMessage]
-  transactions* {.fieldNumber: 4.}: seq[TransactionMessage]
+  transactions* {.fieldNumber: 4.}: seq[SignedTransactionMessage]
 
 func init*(_: type BlockMessage, blck: Block): BlockMessage =
   BlockMessage(
     author: blck.author.uint32,
     round: blck.round,
     parents: blck.parents.mapIt(BlockIdMessage.init(it)),
-    transactions: blck.transactions.mapIt(TransactionMessage.init(it))
+    transactions: blck.transactions.mapIt(SignedTransactionMessage.init(it))
   )
 
 func toBytes*(blck: Block): seq[byte] =
