@@ -1,4 +1,4 @@
-from pkg/mysticeti import CommitteeMember, `==`
+from pkg/mysticeti import CommitteeMember, `==`, `$`
 import ../basics
 import ../transaction
 import ../hashing
@@ -6,6 +6,7 @@ import ./blockid
 
 export mysticeti.CommitteeMember
 export mysticeti.`==`
+export mysticeti.`$`
 
 type Block* = ref object
   author*: CommitteeMember

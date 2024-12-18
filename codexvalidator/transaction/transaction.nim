@@ -73,3 +73,12 @@ func `==`*(a, b: Transaction): bool =
     a.proof == b.proof
   of TransactionKind.missingProof:
     true
+
+func `$`*(transaction: Transaction): string =
+  result &= "Transaction("
+  result &= "version: " & $transaction.version
+  result &= ", kind: " & $transaction.kind
+  result &= ", proofInput: " & $transaction.proofInput
+  if transaction.kind == TransactionKind.storageProof:
+    result &= ", proof: " & $transaction.proof
+  result &= ")"

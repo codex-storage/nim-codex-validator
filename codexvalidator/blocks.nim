@@ -12,3 +12,5 @@ import ./blocks/hashing
 
 export hashing.hash
 export hashing.id
+export hashing.`==`
+export hashing.`$`

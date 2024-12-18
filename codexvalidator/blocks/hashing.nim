@@ -16,3 +16,9 @@ func id*(b: Block): BlockId =
     b.round,
     hash(b)
   )
+
+func `==`*(a, b: Block): bool =
+  a.hash == b.hash
+
+func `$`*(b: Block): string =
+  $b.id

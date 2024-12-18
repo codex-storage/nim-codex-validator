@@ -1,6 +1,8 @@
 import pkg/nimcrypto/sha2
 import pkg/nimcrypto/hash
 
+export hash.`$`
+
 type Hash* = MDigest[256]
 
 func hash*(_: type Hash, bytes: openArray[byte]): Hash =
