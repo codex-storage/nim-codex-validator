@@ -6,5 +6,6 @@ import ./codexvalidator/transaction/testHashing
 import ./codexvalidator/transaction/testSigning
 import ./codexvalidator/blocks/testBlock
 import ./codexvalidator/blocks/testSerialization
+import ./codexvalidator/testNetwork
 
 {.warning[UnusedImport]:off.}
