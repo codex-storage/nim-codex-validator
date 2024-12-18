@@ -1,4 +1,5 @@
 import ./codexvalidator/testSignatures
+import ./codexvalidator/testHashing
 import ./codexvalidator/transaction/testTransaction
 import ./codexvalidator/transaction/testSerialization
 import ./codexvalidator/transaction/testHashing

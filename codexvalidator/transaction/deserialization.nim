@@ -55,7 +55,7 @@ func init(_: type Groth16Proof, message: Groth16ProofMessage): Groth16Proof =
     )
   )
 
-func init(_: type Transaction, message: TransactionMessage): ?!Transaction =
+func init*(_: type Transaction, message: TransactionMessage): ?!Transaction =
   if message.version != TransactionVersion.version0.uint32:
     return failure "unsupported transaction version: " & $message.version
   let proofInput = ? StorageProofInput.init(message.proofInput)
