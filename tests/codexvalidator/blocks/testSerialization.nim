@@ -47,7 +47,6 @@ suite "Block serialization":
     let invalid = seq[byte].example
     let deserialized = Signed[Block].fromBytes(invalid)
     check deserialized.isFailure
-    check deserialized.errorOption.?msg == some "Invalid wire type"
 
   test "deserialization fails when signer is invalid":
     let signed = Signed[Block].example

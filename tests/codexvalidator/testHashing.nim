@@ -21,4 +21,3 @@ suite "Hashing":
     let deserialized = Hash.fromBytes(invalid)
     check deserialized.isFailure
     check deserialized.errorOption.?msg == some "expected hash of 32 bytes, but got: 33"
-
